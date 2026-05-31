@@ -1,4 +1,4 @@
-﻿#include "common.hpp"
+#include "common.hpp"
 #include "component/scheduler.hpp"
 
 #include "game/game.hpp"
@@ -142,4 +142,4 @@ namespace scheduler {
 	};
 }
 
-//REGISTER_COMPONENT(scheduler::component)
+REGISTER_COMPONENT(scheduler::component)

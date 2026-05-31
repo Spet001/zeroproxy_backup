@@ -1,4 +1,4 @@
-﻿#include "common.hpp"
+#include "common.hpp"
 #include "game/game.hpp"
 
 #include <loader/component_loader.hpp>
@@ -15,4 +15,4 @@ namespace pointers {
 	};
 }
 
-//REGISTER_COMPONENT(pointers::component)
+REGISTER_COMPONENT(pointers::component)

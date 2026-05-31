@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "common_core.hpp"
 #include "loader/component_interface.hpp"
 
@@ -12,6 +12,7 @@ namespace component_loader {
 	bool activate(bool server);
 	bool post_load();
 	void post_unpack();
+	void post_thread_setup();
 	void pre_destroy();
 
 	bool is_post_load_phase_complete();

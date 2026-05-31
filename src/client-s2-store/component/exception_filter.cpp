@@ -1,4 +1,4 @@
-﻿#include "common.hpp"
+#include "common.hpp"
 
 #include <exception/filter.hpp>
 #include <loader/component_loader.hpp>
@@ -23,4 +23,4 @@ namespace exception_filter {
 	};
 }
 
-//REGISTER_COMPONENT(exception_filter::component)
+REGISTER_COMPONENT(exception_filter::component)

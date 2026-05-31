@@ -1,4 +1,4 @@
-﻿#include "common_core.hpp"
+#include "common_core.hpp"
 #include "loader/component_loader.hpp"
 
 #include "identification/client.hpp"
@@ -122,6 +122,26 @@ namespace component_loader {
 			}
 
 			post_unpack_phase_complete = true;
+			return true;
+		}();
+
+		if (!res) {
+			TerminateProcess(GetCurrentProcess(), 1);
+		}
+	}
+
+	void post_thread_setup() {
+		static auto res = [] {
+			try {
+				for (const auto& component : get_components()) {
+					component->post_thread_setup();
+				}
+			}
+			catch (const std::exception& e) {
+				utils::nt::show_error(e.what());
+				return false;
+			}
+
 			return true;
 		}();
 

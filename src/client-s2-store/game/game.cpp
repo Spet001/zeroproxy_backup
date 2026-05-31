@@ -1,4 +1,4 @@
-﻿#include "common.hpp"
+#include "common.hpp"
 #include "game/game.hpp"
 
 #include <memory/signature_store.hpp>
@@ -18,4 +18,29 @@ void game::init() {
 bool game::is_server() {
 	static bool is_server = utils::flags::has_flag("dedicated");
 	return is_server;
+}
+
+std::uintptr_t game::get_base() {
+	static const auto base = reinterpret_cast<std::uintptr_t>(utils::nt::library().get_ptr());
+	return base;
+}
+
+bool game::environment::is_sp() {
+	if (identification::game::get_version().mode_ == identification::game::mode::SP) return true;
+
+	char path[MAX_PATH];
+	GetModuleFileNameA(nullptr, path, MAX_PATH);
+	std::string path_str = path;
+	std::transform(path_str.begin(), path_str.end(), path_str.begin(), ::tolower);
+	return path_str.find("s2_sp64_ship.exe") != std::string::npos;
+}
+
+bool game::environment::is_mp() {
+	if (identification::game::get_version().mode_ == identification::game::mode::MP) return true;
+
+	char path[MAX_PATH];
+	GetModuleFileNameA(nullptr, path, MAX_PATH);
+	std::string path_str = path;
+	std::transform(path_str.begin(), path_str.end(), path_str.begin(), ::tolower);
+	return path_str.find("s2_mp64_ship.exe") != std::string::npos;
 }

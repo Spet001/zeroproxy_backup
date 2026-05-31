@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 enum class component_priority {
 	lua_hook = -1,
@@ -24,6 +24,7 @@ struct generic_component {
 	virtual void post_load() {}
 	virtual void pre_destroy() {}
 	virtual void post_unpack() {}
+	virtual void post_thread_setup() {}
 
 	virtual component_priority priority() const {
 		return component_priority::min;

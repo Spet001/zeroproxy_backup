@@ -37,10 +37,10 @@ namespace patches {
 		}
 
 		void post_unpack() override {
-			seh_stringed_get_string_hook.create(game::SEH_StringEd_GetString, seh_stringed_get_string_stub);
+			// seh_stringed_get_string_hook.create(game::SEH_StringEd_GetString, seh_stringed_get_string_stub);
 			//x_store_query_game_license_result_hook.create(game::XStoreQueryGameLicenseResult, x_store_query_game_license_result_stub);
 		}
 	};
 }
 
-//REGISTER_COMPONENT(patches::component)
+REGISTER_COMPONENT(patches::component)

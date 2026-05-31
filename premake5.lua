@@ -351,9 +351,9 @@ workspace "ZeroProxy"
 			"$(ProjectDir)src"
 		}
 
-		prebuildcommands {
-			"cd ../../ && .\\tools\\premake\\premake5.exe generate-buildinfo"
-		}
+--		prebuildcommands {
+--			"cd ../../ && .\\tools\\premake\\premake5.exe generate-buildinfo"
+--		}
 
 		dependencies.imports()
 
