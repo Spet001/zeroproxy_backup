@@ -1,10 +1,32 @@
-﻿#pragma once
+#pragma once
 #include "common.hpp"
 #include "game/function_types.hpp"
 
 #define LUA_REGISTRYINDEX	(-10000)
 #define LUA_ENVIRONINDEX	(-10001)
 #define LUA_GLOBALSINDEX	(-10002)
+
+namespace t7s {
+	constexpr auto WORKSHOP_MAX_ENTRIES = 128;
+
+	struct ugcinfo_entry_wstor {
+		char name_[0x64];
+		char internal_name_[0x20];
+		char ugc_name_[0x20];
+		char description_[0x100];
+		char ugc_path_basic_[0x104];
+		char ugc_root_[0x104];
+		char ugc_path_[0x104];
+		std::uint32_t unk_4B0_;
+		std::uint32_t hash_id_;
+		std::uint32_t unk_4B8_;
+	};
+
+	struct ugcinfo_wstor {
+		std::uint32_t num_entries_;
+		ugcinfo_entry_wstor entries_[WORKSHOP_MAX_ENTRIES];
+	};
+}
 
 namespace game {
 	void init();

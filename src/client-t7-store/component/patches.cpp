@@ -69,7 +69,7 @@ namespace patches {
 		BOOL set_window_text_a_stub(HWND h_wnd, LPCSTR lp_string) {
 			LPCSTR lp_string_patched = lp_string;
 			if (h_wnd == game_window) {
-				lp_string_patched = "t7s by lifix and luxploit | " GIT_DESCRIBE;
+				lp_string_patched = "T7sResurgeGDK by Lifix Luxploit and Spet | " GIT_DESCRIBE;
 			}
 
 			return set_window_text_a_hook.invoke<BOOL>(h_wnd, lp_string_patched);
