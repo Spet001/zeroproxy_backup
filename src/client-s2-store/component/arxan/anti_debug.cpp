@@ -456,6 +456,12 @@ namespace arxan::anti_debug
 					return STATUS_INFO_LENGTH_MISMATCH;
 				}
 
+				// Check for alignment. If it's not 4-byte aligned, return STATUS_DATATYPE_MISALIGNMENT.
+				if (reinterpret_cast<std::uintptr_t>(thread_information) % 4 != 0)
+				{
+					return 0x80000002L; // STATUS_DATATYPE_MISALIGNMENT
+				}
+
 				if (thread_information)
 				{
 					*static_cast<std::uint8_t*>(thread_information) = 1; // thread is hidden
@@ -499,6 +505,7 @@ namespace arxan::anti_debug
 
 		std::vector<ntdll_copy> ntdll_copies;
 		std::mutex ntdll_copies_mutex;
+		uint64_t g_ntdll_base = 0;
 
 		void hook_ntdll_copy(ntdll_copy& copy)
 		{
@@ -560,15 +567,19 @@ namespace arxan::anti_debug
 				std::lock_guard<std::mutex> lock(ntdll_copies_mutex);
 				for (auto& copy : ntdll_copies)
 				{
-					if (!copy.hooked && fault_address >= reinterpret_cast<uint64_t>(copy.address) && fault_address < reinterpret_cast<uint64_t>(copy.address) + copy.size)
+					if (fault_address >= reinterpret_cast<uint64_t>(copy.address) && fault_address < reinterpret_cast<uint64_t>(copy.address) + copy.size)
 					{
-						LOG("Arxan/AntiDebug", INFO, "[VEH] Execute fault in unhooked NTDLL copy at {:X}. Hooking now...", fault_address);
-
-						DWORD old;
-						VirtualProtect(copy.address, copy.size, PAGE_EXECUTE_READWRITE, &old);
-						
-						// hook_ntdll_copy(copy);
-						copy.hooked = true;
+						if (!copy.hooked)
+						{
+							LOG("Arxan/AntiDebug", INFO, "[VEH] Execute fault in unhooked NTDLL copy at {:X}. Hooking now...", fault_address);
+							
+							// Restore execution protection so the copy can run natively
+							DWORD old_protect;
+							VirtualProtect(copy.address, copy.size, PAGE_EXECUTE_READWRITE, &old_protect);
+							
+							hook_ntdll_copy(copy);
+							copy.hooked = true;
+						}
 
 						return EXCEPTION_CONTINUE_EXECUTION;
 					}
@@ -642,6 +653,8 @@ namespace arxan::anti_debug
 	public:
 		void post_load() override
 		{
+			g_ntdll_base = reinterpret_cast<uint64_t>(utils::nt::library("ntdll.dll").get_ptr());
+
 			auto* dll_characteristics = &utils::nt::library().get_optional_header()->DllCharacteristics;
 			utils::hook::set<WORD>(dll_characteristics, *dll_characteristics | IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE);
 

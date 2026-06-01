@@ -494,7 +494,11 @@ namespace arxan::integrity
 						continue;
 					}
 				}
-				LOG("Arxan/Integrity", INFO, "Unpatched integrity check at: {:X}", reinterpret_cast<uint64_t>(i) - game::base_address);
+				std::string bytes_str;
+				for (int j = 0; j < 15; ++j) {
+					bytes_str += std::format("{:02X} ", ptr[3 + j]);
+				}
+				LOG("Arxan/Integrity", INFO, "Unpatched check at {:X}. Bytes after 89 04 8A: {}", game::derelocate(i), bytes_str);
 			}
 
 			LOG("Arxan/Integrity", INFO, "Patched {} intact, {} big intact, {} split, {} big split", intact_count, big_intact_count, split_count, big_split_count);
@@ -502,45 +506,261 @@ namespace arxan::integrity
 
 		void patch_checksum_comparisons()
 		{
-			constexpr auto xor_ecx = static_cast<uint16_t>(0xC933);
-			constexpr auto xor_edx = static_cast<uint16_t>(0xD233);
-
-			// Variant 1: XOR table equality check
-			const auto xor_table_compare = "8B 0C 8B 33 0C 82"_sig;
+			// Dynamic XOR table comparison patcher
+			const auto candidate_xor = "8B ? ? 33 ? ?"_sig;
 			auto xor_table_compare_count = 0;
-			for (auto* i : xor_table_compare)
+			for (auto* i : candidate_xor)
 			{
-				utils::hook::set<uint16_t>(i, xor_ecx);
-				utils::hook::nop(i + 2, 4);
-				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(i), 6);
+				auto* ptr = reinterpret_cast<uint8_t*>(i);
+				if ((ptr[1] & 0xC7) != 0x04) continue; // mod=00/01/10, rm=100 (SIB)
+				if ((ptr[2] & 0xC0) != 0x80) continue; // scale=10 (*4)
+				if ((ptr[4] & 0xC7) != 0x04) continue;
+				if ((ptr[5] & 0xC0) != 0x80) continue;
+
+				uint8_t mov_reg = (ptr[1] >> 3) & 7;
+				uint8_t xor_reg = (ptr[4] >> 3) & 7;
+				if (mov_reg != xor_reg) continue;
+
+				uint8_t xor_reg_reg_modrm = 0xC0 | (mov_reg << 3) | mov_reg;
+				
+				// Patch the MOV to XOR reg, reg and NOP the rest
+				utils::hook::set<uint8_t>(ptr, 0x33);
+				utils::hook::set<uint8_t>(ptr + 1, xor_reg_reg_modrm);
+				utils::hook::nop(ptr + 2, 4);
+				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(ptr), 6);
 				xor_table_compare_count++;
 			}
-			LOG("Arxan/Integrity", INFO, "Patched {} XOR table comparisons", xor_table_compare_count);
+			LOG("Arxan/Integrity", INFO, "Patched {} dynamic XOR table comparisons", xor_table_compare_count);
 
-			// Variant 2: Subtraction equality check
-			const auto sub_compare = "8B 0C 8B F7 D9 03 0C 82"_sig;
-			auto sub_compare_count = 0;
-			for (auto* i : sub_compare)
+			// Dynamic SUB table comparison patcher
+			const auto candidate_sub = "8B ? ? 2B ? ?"_sig;
+			auto sub_table_compare_count = 0;
+			for (auto* i : candidate_sub)
 			{
-				utils::hook::set<uint16_t>(i, xor_ecx);
-				utils::hook::nop(i + 2, 6);
-				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(i), 8);
-				sub_compare_count++;
-			}
-			LOG("Arxan/Integrity", INFO, "Patched {} subtraction comparisons", sub_compare_count);
+				auto* ptr = reinterpret_cast<uint8_t*>(i);
+				if ((ptr[1] & 0xC7) != 0x04) continue;
+				if ((ptr[2] & 0xC0) != 0x80) continue;
+				if ((ptr[4] & 0xC7) != 0x04) continue;
+				if ((ptr[5] & 0xC0) != 0x80) continue;
 
-			// Variant 3: Direct table comparison
-			const auto cmp_compare = "8B 04 82 8B 14 8B 3B C2"_sig;
-			auto cmp_compare_count = 0;
-			for (auto* i : cmp_compare)
-			{
-				utils::hook::set<uint16_t>(i, xor_ecx);
-				utils::hook::set<uint16_t>(i + 2, xor_edx);
-				utils::hook::nop(i + 4, 4);
-				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(i), 8);
-				cmp_compare_count++;
+				uint8_t mov_reg = (ptr[1] >> 3) & 7;
+				uint8_t sub_reg = (ptr[4] >> 3) & 7;
+				if (mov_reg != sub_reg) continue;
+
+				uint8_t xor_reg_reg_modrm = 0xC0 | (mov_reg << 3) | mov_reg;
+				
+				utils::hook::set<uint8_t>(ptr, 0x33);
+				utils::hook::set<uint8_t>(ptr + 1, xor_reg_reg_modrm);
+				utils::hook::nop(ptr + 2, 4);
+				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(ptr), 6);
+				sub_table_compare_count++;
 			}
-			LOG("Arxan/Integrity", INFO, "Patched {} direct table comparisons", cmp_compare_count);
+			LOG("Arxan/Integrity", INFO, "Patched {} dynamic SUB comparisons", sub_table_compare_count);
+
+			// Dynamic NEG+ADD table comparison patcher (Variant 2)
+			const auto candidate_neg_add = "8B ? ? F7 ? 03 ? ?"_sig;
+			auto neg_add_count = 0;
+			for (auto* i : candidate_neg_add)
+			{
+				auto* ptr = reinterpret_cast<uint8_t*>(i);
+				if ((ptr[1] & 0xC7) != 0x04) continue;
+				if ((ptr[2] & 0xC0) != 0x80) continue;
+
+				uint8_t mov_reg = (ptr[1] >> 3) & 7;
+				uint8_t neg_modrm = ptr[4];
+				if (neg_modrm != (0xC0 | (3 << 3) | mov_reg)) continue;
+
+				if ((ptr[6] & 0xC7) != 0x04) continue;
+				if ((ptr[7] & 0xC0) != 0x80) continue;
+				uint8_t add_reg = (ptr[6] >> 3) & 7;
+				if (add_reg != mov_reg) continue;
+
+				uint8_t xor_reg_modrm = 0xC0 | (mov_reg << 3) | mov_reg;
+				
+				utils::hook::set<uint8_t>(ptr, 0x33);
+				utils::hook::set<uint8_t>(ptr + 1, xor_reg_modrm);
+				utils::hook::nop(ptr + 2, 6);
+				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(ptr), 8);
+				neg_add_count++;
+			}
+			LOG("Arxan/Integrity", INFO, "Patched {} dynamic NEG+ADD comparisons", neg_add_count);
+
+			// Dynamic CMP table comparison patcher (Variant 3)
+			const auto candidate_cmp = "8B ? ? 8B ? ? 3B ?"_sig;
+			auto cmp_table_compare_count = 0;
+			for (auto* i : candidate_cmp)
+			{
+				auto* ptr = reinterpret_cast<uint8_t*>(i);
+				if ((ptr[1] & 0xC7) != 0x04) continue;
+				if ((ptr[2] & 0xC0) != 0x80) continue;
+				if ((ptr[4] & 0xC7) != 0x04) continue;
+				if ((ptr[5] & 0xC0) != 0x80) continue;
+				if ((ptr[7] & 0xC0) != 0xC0) continue; // Register to register comparison
+
+				uint8_t mov1_reg = (ptr[1] >> 3) & 7;
+				uint8_t mov2_reg = (ptr[4] >> 3) & 7;
+
+				uint8_t cmp_reg1 = (ptr[7] >> 3) & 7;
+				uint8_t cmp_reg2 = ptr[7] & 7;
+
+				if (mov1_reg != cmp_reg1 || mov2_reg != cmp_reg2) continue;
+
+				uint8_t cmp_reg1_reg1_modrm = 0xC0 | (cmp_reg1 << 3) | cmp_reg1;
+				utils::hook::set<uint8_t>(ptr + 6, 0x3B);
+				utils::hook::set<uint8_t>(ptr + 7, cmp_reg1_reg1_modrm);
+				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(ptr + 6), 2);
+				cmp_table_compare_count++;
+			}
+			LOG("Arxan/Integrity", INFO, "Patched {} dynamic CMP comparisons", cmp_table_compare_count);
+
+			// Dynamic CMP table comparison patcher (Variant 4: 1 MOV)
+			const auto candidate_cmp_1mov = "8B ? ? 3B ? ?"_sig;
+			auto cmp_1mov_count = 0;
+			for (auto* i : candidate_cmp_1mov)
+			{
+				auto* ptr = reinterpret_cast<uint8_t*>(i);
+				if ((ptr[1] & 0xC7) != 0x04) continue;
+				if ((ptr[2] & 0xC0) != 0x80) continue;
+				if ((ptr[4] & 0xC7) != 0x04) continue;
+				if ((ptr[5] & 0xC0) != 0x80) continue;
+
+				uint8_t mov_reg = (ptr[1] >> 3) & 7;
+				uint8_t cmp_reg = (ptr[4] >> 3) & 7;
+				if (mov_reg != cmp_reg) continue;
+
+				uint8_t cmp_reg_reg_modrm = 0xC0 | (cmp_reg << 3) | cmp_reg;
+				utils::hook::set<uint8_t>(ptr + 3, 0x3B);
+				utils::hook::set<uint8_t>(ptr + 4, cmp_reg_reg_modrm);
+				utils::hook::nop(ptr + 5, 1);
+				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(ptr + 3), 3);
+				cmp_1mov_count++;
+			}
+			LOG("Arxan/Integrity", INFO, "Patched {} dynamic CMP (1 MOV) comparisons", cmp_1mov_count);
+
+			// Dynamic CMP table comparison patcher (Variant 5: CMP [mem], reg)
+			const auto candidate_cmp_mem_reg = "8B ? ? 39 ? ?"_sig;
+			auto cmp_mem_reg_count = 0;
+			for (auto* i : candidate_cmp_mem_reg)
+			{
+				auto* ptr = reinterpret_cast<uint8_t*>(i);
+				if ((ptr[1] & 0xC7) != 0x04) continue;
+				if ((ptr[2] & 0xC0) != 0x80) continue;
+				if ((ptr[4] & 0xC7) != 0x04) continue;
+				if ((ptr[5] & 0xC0) != 0x80) continue;
+
+				uint8_t mov_reg = (ptr[1] >> 3) & 7;
+				uint8_t cmp_reg = (ptr[4] >> 3) & 7;
+				if (mov_reg != cmp_reg) continue;
+
+				uint8_t cmp_reg_reg_modrm = 0xC0 | (cmp_reg << 3) | cmp_reg;
+				utils::hook::set<uint8_t>(ptr + 3, 0x39);
+				utils::hook::set<uint8_t>(ptr + 4, cmp_reg_reg_modrm);
+				utils::hook::nop(ptr + 5, 1);
+				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(ptr + 3), 3);
+				cmp_mem_reg_count++;
+			}
+			LOG("Arxan/Integrity", INFO, "Patched {} dynamic CMP [mem], reg comparisons", cmp_mem_reg_count);
+
+			// Dynamic XOR table comparison patcher (disp8)
+			const auto candidate_xor_disp8 = "8B ? ? ? 33 ? ? ?"_sig;
+			auto xor_disp8_count = 0;
+			for (auto* i : candidate_xor_disp8)
+			{
+				auto* ptr = reinterpret_cast<uint8_t*>(i);
+				if ((ptr[1] & 0xC7) != 0x44) continue;
+				if ((ptr[2] & 0xC0) != 0x80) continue;
+				if ((ptr[5] & 0xC7) != 0x44) continue;
+				if ((ptr[6] & 0xC0) != 0x80) continue;
+				
+				uint8_t mov_reg = (ptr[1] >> 3) & 7;
+				uint8_t xor_reg = (ptr[5] >> 3) & 7;
+				if (mov_reg != xor_reg) continue;
+
+				uint8_t xor_reg_reg_modrm = 0xC0 | (mov_reg << 3) | mov_reg;
+				
+				utils::hook::set<uint8_t>(ptr, 0x33);
+				utils::hook::set<uint8_t>(ptr + 1, xor_reg_reg_modrm);
+				utils::hook::nop(ptr + 2, 6);
+				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(ptr), 8);
+				xor_disp8_count++;
+			}
+			LOG("Arxan/Integrity", INFO, "Patched {} dynamic XOR (disp8) comparisons", xor_disp8_count);
+
+			// Dynamic SUB table comparison patcher (disp8)
+			const auto candidate_sub_disp8 = "8B ? ? ? 2B ? ? ?"_sig;
+			auto sub_disp8_count = 0;
+			for (auto* i : candidate_sub_disp8)
+			{
+				auto* ptr = reinterpret_cast<uint8_t*>(i);
+				if ((ptr[1] & 0xC7) != 0x44) continue;
+				if ((ptr[2] & 0xC0) != 0x80) continue;
+				if ((ptr[5] & 0xC7) != 0x44) continue;
+				if ((ptr[6] & 0xC0) != 0x80) continue;
+
+				uint8_t mov_reg = (ptr[1] >> 3) & 7;
+				uint8_t sub_reg = (ptr[5] >> 3) & 7;
+				if (mov_reg != sub_reg) continue;
+
+				uint8_t xor_reg_reg_modrm = 0xC0 | (mov_reg << 3) | mov_reg;
+				
+				utils::hook::set<uint8_t>(ptr, 0x33);
+				utils::hook::set<uint8_t>(ptr + 1, xor_reg_reg_modrm);
+				utils::hook::nop(ptr + 2, 6);
+				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(ptr), 8);
+				sub_disp8_count++;
+			}
+			LOG("Arxan/Integrity", INFO, "Patched {} dynamic SUB (disp8) comparisons", sub_disp8_count);
+
+			// Dynamic CMP table comparison patcher (disp8)
+			const auto candidate_cmp_disp8 = "8B ? ? ? 3B ? ? ?"_sig;
+			auto cmp_disp8_count = 0;
+			for (auto* i : candidate_cmp_disp8)
+			{
+				auto* ptr = reinterpret_cast<uint8_t*>(i);
+				if ((ptr[1] & 0xC7) != 0x44) continue;
+				if ((ptr[2] & 0xC0) != 0x80) continue;
+				if ((ptr[5] & 0xC7) != 0x44) continue;
+				if ((ptr[6] & 0xC0) != 0x80) continue;
+
+				uint8_t mov_reg = (ptr[1] >> 3) & 7;
+				uint8_t cmp_reg = (ptr[5] >> 3) & 7;
+				if (mov_reg != cmp_reg) continue;
+
+				uint8_t cmp_reg_reg_modrm = 0xC0 | (cmp_reg << 3) | cmp_reg;
+				utils::hook::set<uint8_t>(ptr + 4, 0x3B);
+				utils::hook::set<uint8_t>(ptr + 5, cmp_reg_reg_modrm);
+				utils::hook::nop(ptr + 6, 2);
+				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(ptr + 4), 4);
+				cmp_disp8_count++;
+			}
+			LOG("Arxan/Integrity", INFO, "Patched {} dynamic CMP (disp8) comparisons", cmp_disp8_count);
+
+			// Dynamic NEG+ADD table comparison patcher (disp8)
+			const auto candidate_neg_add_disp8 = "8B ? ? ? F7 ? 03 ? ? ?"_sig;
+			auto neg_add_disp8_count = 0;
+			for (auto* i : candidate_neg_add_disp8)
+			{
+				auto* ptr = reinterpret_cast<uint8_t*>(i);
+				if ((ptr[1] & 0xC7) != 0x44) continue;
+				if ((ptr[2] & 0xC0) != 0x80) continue;
+				if ((ptr[5] & 0xF8) != 0xD8) continue;
+				if ((ptr[7] & 0xC7) != 0x44) continue;
+				if ((ptr[8] & 0xC0) != 0x80) continue;
+
+				uint8_t mov_reg = (ptr[1] >> 3) & 7;
+				uint8_t neg_reg = ptr[5] & 7;
+				uint8_t add_reg = (ptr[7] >> 3) & 7;
+				if (mov_reg != neg_reg || mov_reg != add_reg) continue;
+
+				uint8_t xor_reg_reg_modrm = 0xC0 | (mov_reg << 3) | mov_reg;
+				
+				utils::hook::set<uint8_t>(ptr, 0x33);
+				utils::hook::set<uint8_t>(ptr + 1, xor_reg_reg_modrm);
+				utils::hook::nop(ptr + 2, 8);
+				arxan::code_healing::register_patch(reinterpret_cast<uint64_t>(ptr), 10);
+				neg_add_disp8_count++;
+			}
+			LOG("Arxan/Integrity", INFO, "Patched {} dynamic NEG+ADD (disp8) comparisons", neg_add_disp8_count);
 		}
 
 		void patch_integrity_checks()
@@ -548,9 +768,9 @@ namespace arxan::integrity
 #ifdef PRECOMPUTED
 			patch_integrity_checks_precomputed();
 #else
-			// search_and_patch_integrity_checks();
+			search_and_patch_integrity_checks();
 #endif
-			// patch_checksum_comparisons();
+			patch_checksum_comparisons();
 		}
 	}
 

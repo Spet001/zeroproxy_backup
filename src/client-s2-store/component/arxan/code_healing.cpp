@@ -326,8 +326,6 @@ namespace arxan::code_healing
 				const auto skip_update = a.newLabel();
 
 				a.mov(rcx, rdx); // rdx = destination pointer
-				a.sub(rcx, reinterpret_cast<uint64_t>(next_block));
-				a.sar(rcx, 10);
 				a.mov(edx, 4); // length = 4 bytes (size of eax)
 				a.call_aligned(allow_code_healing);
 
