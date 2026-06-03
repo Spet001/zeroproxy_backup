@@ -15,11 +15,12 @@ namespace arxan::code_healing
 
 namespace arxan::breakpoints
 {
+utils::hook::detour add_vectored_exception_handler_hook;
+	utils::hook::detour remove_vectored_exception_handler_hook;
+
 	namespace
 	{
 		std::unordered_map<PVOID, void*> handle_handler;
-		utils::hook::detour add_vectored_exception_handler_hook;
-		utils::hook::detour remove_vectored_exception_handler_hook;
 
 		void fake_exception(void* address, _CONTEXT* fake_context, DWORD exception)
 		{

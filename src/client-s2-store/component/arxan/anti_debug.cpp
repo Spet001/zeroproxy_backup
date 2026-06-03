@@ -9,6 +9,8 @@
 #include <utils/hook.hpp>
 #include <utils/string.hpp>
 #include <MinHook.h>
+#include "breakpoints.hpp"
+#include "../exception_filter.hpp"
 
 PVOID g_veh_handle = nullptr;
 
@@ -661,8 +663,6 @@ namespace arxan::anti_debug
 					// If this is the second copy, schedule unhook
 					if (ntdll_copies.size() == 2) {
 					    scheduler::once([]() {
-					        // 1. Disable only the specific hooks we created for anti-debug
-					        // MH_DisableHook(MH_ALL_HOOKS) is too aggressive and disables hooks needed by the game engine/other mods
 					        virtual_alloc_hook.clear();
 					        nt_close_hook.clear();
 					        nt_query_information_process_hook.clear();
@@ -670,6 +670,14 @@ namespace arxan::anti_debug
 					        nt_set_information_thread_hook.clear();
 					        nt_query_information_thread_hook.clear();
 					        
+					        // Clear VEH hooks in breakpoints.cpp
+					        arxan::breakpoints::add_vectored_exception_handler_hook.clear();
+					        arxan::breakpoints::remove_vectored_exception_handler_hook.clear();
+					        
+					        // Clear any exception filter hooks too
+					        set_unhandled_exception_filter_hook.clear();
+					        
+					        // 2. Clean up our trampoline protection
 					        // 2. Clean up our trampoline protection
 					        if (g_direct_NtProtectVirtualMemory) {
 					            DWORD old_protect;
