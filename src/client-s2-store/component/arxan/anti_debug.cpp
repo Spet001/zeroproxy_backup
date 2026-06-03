@@ -8,6 +8,9 @@
 
 #include <utils/hook.hpp>
 #include <utils/string.hpp>
+#include <MinHook.h>
+
+PVOID g_veh_handle = nullptr;
 
 #define ProcessDebugPort 7
 #define ProcessDebugObjectHandle 30
@@ -634,7 +637,7 @@ namespace arxan::anti_debug
 
 			if (rec->ExceptionCode == STATUS_INVALID_HANDLE)
 			{
-				return EXCEPTION_CONTINUE_EXECUTION;
+				return EXCEPTION_CONTINUE_SEARCH;
 			}
 
 			return EXCEPTION_CONTINUE_SEARCH;
@@ -654,6 +657,45 @@ namespace arxan::anti_debug
 					std::lock_guard<std::recursive_mutex> lock(ntdll_copies_mutex);
 					ntdll_copies.push_back({ allocated, size, false });
 					LOG("Arxan/AntiDebug", INFO, "[VirtualAlloc] Registered NTDLL copy at: {}", allocated);
+					
+					// If this is the second copy, schedule unhook
+					if (ntdll_copies.size() == 2) {
+					    scheduler::once([]() {
+					        // 1. Disable only the specific hooks we created for anti-debug
+					        // MH_DisableHook(MH_ALL_HOOKS) is too aggressive and disables hooks needed by the game engine/other mods
+					        virtual_alloc_hook.clear();
+					        nt_close_hook.clear();
+					        nt_query_information_process_hook.clear();
+					        nt_query_system_information_hook.clear();
+					        nt_set_information_thread_hook.clear();
+					        nt_query_information_thread_hook.clear();
+					        
+					        // 2. Clean up our trampoline protection
+					        if (g_direct_NtProtectVirtualMemory) {
+					            DWORD old_protect;
+					            PVOID base = reinterpret_cast<PVOID>(g_direct_NtProtectVirtualMemory);
+					            SIZE_T t_size = 0x1000;
+					            VirtualProtect(base, t_size, PAGE_READWRITE, &old_protect);
+					        }
+					        
+					        // 3. Restore all NTDLL copies to PAGE_EXECUTE_READWRITE so they run natively without triggering VEH
+					        {
+					            std::lock_guard<std::recursive_mutex> inner_lock(ntdll_copies_mutex);
+					            for (auto& copy : ntdll_copies) {
+					                DWORD old_protect;
+					                VirtualProtect(copy.address, copy.size, PAGE_EXECUTE_READWRITE, &old_protect);
+					            }
+					        }
+					        
+					        // 4. Remove our VEH handler so Arxan doesn't flag it
+					        if (g_veh_handle) {
+					            RemoveVectoredExceptionHandler(g_veh_handle);
+					            g_veh_handle = nullptr;
+					        }
+					        
+					        LOG("Arxan/AntiDebug", INFO, "[VirtualAlloc] SUPER STEALTH UNHOOK: Disabled specific hooks, restored copies, removed VEH!");
+					    }, scheduler::pipeline::async, std::chrono::milliseconds(5000));
+					}
 				}
 				return allocated;
 			}
@@ -724,7 +766,7 @@ namespace arxan::anti_debug
 			hide_being_debugged();
 			scheduler::loop(hide_being_debugged, scheduler::pipeline::async);
 
-			AddVectoredExceptionHandler(1, exception_filter);
+			g_veh_handle = AddVectoredExceptionHandler(1, exception_filter);
 
 			// create_mutex_ex_a_hook.create(CreateMutexExA, create_mutex_ex_a_stub);
 			// create_thread_hook.create(CreateThread, create_thread_stub);
@@ -764,6 +806,8 @@ namespace arxan::anti_debug
 
 			auto* virtual_alloc_func = utils::nt::library("kernel32.dll").get_proc<void*>("VirtualAlloc");
 			virtual_alloc_hook.create(virtual_alloc_func, virtual_alloc_stub);
+
+			
 
 			auto* check_remote_debugger_present_func = utils::nt::library("kernel32.dll").get_proc<void*>("CheckRemoteDebuggerPresent");
 			// check_remote_debugger_present_hook.create(check_remote_debugger_present_func, check_remote_debugger_present_stub);
