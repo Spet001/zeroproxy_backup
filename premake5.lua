@@ -604,6 +604,32 @@ workspace "ZeroProxy"
 
 		dependencies.imports()
 
+	project "s2-store-dlc-unlocker-standalone"
+		location "%{wks.location}/src/%{prj.name}"
+		objdir "%{wks.location}/build/obj/s2-store-dlc-unlocker-standalone"
+		targetdir "%{wks.location}/build/%{cfg.platform}/%{cfg.buildcfg}/s2-store-dlc-unlocker-standalone"
+		kind "SharedLib"
+		language "C++"
+
+		targetname "s2_dlc_unlocker"
+
+		files {
+			"./src/%{prj.name}/**.hpp",
+			"./src/%{prj.name}/**.cpp",
+		}
+
+		includedirs {
+			"./src/%{prj.name}",
+			"./src/common",
+			"./src/generated"
+		}
+
+		links {
+			"common"
+		}
+
+		dependencies.imports()
+
 	project "client-iw8"
 		location "%{wks.location}/src/%{prj.name}"
 		objdir "%{wks.location}/build/obj/iw8"
