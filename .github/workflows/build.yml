@@ -106,3 +106,23 @@ jobs:
       with:
         name: t9-mod
         path: build/x64/Release/t9/version.dll
+
+    - name: Build iw8s (Store)
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild .\src\client-iw8-store\client-iw8-store.vcxproj /p:Configuration=Release /p:Platform=x64
+
+    - name: Upload iw8s (Store) artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: iw8s (Store)
+        path: build/x64/Release/iw8-store/d3d11.dll
+
+    - name: Build s2 DLC Unlocker (Standalone)
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild .\src\s2-store-dlc-unlocker-standalone\s2-store-dlc-unlocker-standalone.vcxproj /p:Configuration=Release /p:Platform=x64
+
+    - name: Upload s2 DLC Unlocker artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: s2-store-dlc-unlocker-standalone
+        path: build/x64/Release/s2-store-dlc-unlocker-standalone/s2_dlc_unlocker.dll

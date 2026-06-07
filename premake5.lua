@@ -604,6 +604,35 @@ workspace "ZeroProxy"
 
 		dependencies.imports()
 
+	project "client-iw8-store"
+		location "%{wks.location}/src/%{prj.name}"
+		objdir "%{wks.location}/build/obj/iw8-store"
+		targetdir "%{wks.location}/build/%{cfg.platform}/%{cfg.buildcfg}/iw8-store"
+		kind "SharedLib"
+		language "C++"
+
+		targetname "d3d11"
+
+		pchheader "common.hpp"
+		pchsource "src/%{prj.name}/common.cpp"
+
+		files {
+			"./src/%{prj.name}/**.hpp",
+			"./src/%{prj.name}/**.cpp"
+		}
+
+		includedirs {
+			"./src/%{prj.name}",
+			"./src/common",
+			"./src/generated"
+		}
+
+		links {
+			"common"
+		}
+
+		dependencies.imports()
+
 	project "s2-store-dlc-unlocker-standalone"
 		location "%{wks.location}/src/%{prj.name}"
 		objdir "%{wks.location}/build/obj/s2-store-dlc-unlocker-standalone"
