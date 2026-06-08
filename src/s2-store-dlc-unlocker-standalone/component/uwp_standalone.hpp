@@ -112,7 +112,13 @@ namespace uwp {
                     std::string dir(path);
                     auto pos = dir.find_last_of("\\/");
                     dir = (pos != std::string::npos) ? dir.substr(0, pos) : dir;
-                    dir += "\\"; // Add trailing slash for safe concatenation
+                    
+                    std::string dlc_dir = dir + "\\zone\\dlc\\";
+                    if (GetFileAttributesA(dlc_dir.c_str()) != INVALID_FILE_ATTRIBUTES) {
+                        dir = dlc_dir;
+                    } else {
+                        dir += "\\"; // Add trailing slash for safe concatenation
+                    }
                     *out_size = dir.size() + 1;
                 }
                 return S_OK;
@@ -129,7 +135,13 @@ namespace uwp {
                     std::string dir(path);
                     auto pos = dir.find_last_of("\\/");
                     dir = (pos != std::string::npos) ? dir.substr(0, pos) : dir;
-                    dir += "\\"; // Add trailing slash for safe concatenation
+
+                    std::string dlc_dir = dir + "\\zone\\dlc\\";
+                    if (GetFileAttributesA(dlc_dir.c_str()) != INVALID_FILE_ATTRIBUTES) {
+                        dir = dlc_dir;
+                    } else {
+                        dir += "\\"; // Add trailing slash for safe concatenation
+                    }
                     strncpy_s(out_buf, out_size, dir.c_str(), _TRUNCATE);
                 }
                 return S_OK;

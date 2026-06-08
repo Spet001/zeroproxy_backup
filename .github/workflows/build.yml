@@ -27,6 +27,10 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: .\generate.bat
 
+
+    - name: Build iw5s (Store)
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild .\src\client-iw5-store\client-iw5-store.vcxproj /p:Configuration=Release /p:Platform=x64
     - name: Build iw4s (Store)
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild .\src\client-iw4-store\client-iw4-store.vcxproj /p:Configuration=Release /p:Platform=x64
@@ -47,6 +51,10 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild .\src\client-t7-store\client-t7-store.vcxproj /p:Configuration=Release /p:Platform=x64
 
+
+    - name: Build s1s (Store)
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild .\src\client-s1-store\client-s1-store.vcxproj /p:Configuration=Release /p:Platform=x64
     - name: Build s2s (Store)
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild .\src\client-s2-store\client-s2-store.vcxproj /p:Configuration=Release /p:Platform=x64
@@ -59,6 +67,12 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild .\src\client-t9\client-t9.vcxproj /p:Configuration=Release /p:Platform=x64
 
+
+    - name: Upload iw5s (Store) artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: iw5s (Store)
+        path: build/x64/Release/iw5-store/d3d9.dll
     - name: Upload iw4s (Store) artifact
       uses: actions/upload-artifact@v4
       with:
@@ -89,6 +103,12 @@ jobs:
         name: t7s (Store)
         path: build/x64/Release/t7-store/d3d11.dll
 
+
+    - name: Upload s1s (Store) artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: s1s (Store)
+        path: build/x64/Release/s1-store/d3d11.dll
     - name: Upload s2s (Store) artifact
       uses: actions/upload-artifact@v4
       with:
@@ -126,3 +146,4 @@ jobs:
       with:
         name: s2-store-dlc-unlocker-standalone
         path: build/x64/Release/s2-store-dlc-unlocker-standalone/s2_dlc_unlocker.dll
+

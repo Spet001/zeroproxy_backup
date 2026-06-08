@@ -8,10 +8,12 @@ BOOL APIENTRY DllMain(HMODULE h_mod, DWORD reason, PVOID) {
 	if (reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(h_mod);
 
+        client_module = h_mod;
+
         // Setup the proxy so the game actually loads this as d3d11.dll
         proxy::on_dll_process_attach(h_mod, false);
 
-        // Initialize the network isolation unconditionally, not working at the moment and needs to be reworked, but it should be fine to have it running in the background for now
+        // Initialize the network isolation unconditionally, not working at the moment and needs to be reworked if someday we want LAN
       //  network::init_isolation_hooks();
 
         // Initialize UWP hooks to bypass DRM checks

@@ -54,6 +54,7 @@ namespace uwp {
     namespace x_package {
         inline std::unordered_set<void*> fake_mount_handles;
 
+        inline utils::hook::detour x_package_mount_hook;
         inline utils::hook::detour x_package_mount_with_ui_result_hook;
         inline utils::hook::detour x_package_get_mount_path_size_hook;
         inline utils::hook::detour x_package_get_mount_path_hook;
@@ -80,6 +81,16 @@ namespace uwp {
             void* call_cb = cb ? (void*)&hook_pkg_enum_callback : nullptr;
             void* call_ctx = cb ? (void*)&wrapper_ctx : ctx;
             return func(_this, kind, scope, call_ctx, call_cb);
+        }
+
+        inline HRESULT x_package_mount_stub(void* _this, const char* package_identifier, void** out_handle) {
+            if (out_handle) {
+                void* fake = malloc(0x10);
+                memset(fake, 0, 0x10);
+                *out_handle = fake;
+                fake_mount_handles.insert(fake);
+            }
+            return S_OK;
         }
 
         inline HRESULT x_package_mount_with_ui_async_stub(void* _this, const char* package_identifier, uwp::XAsyncBlock* async) {
@@ -349,6 +360,7 @@ namespace uwp {
         
         if (SUCCEEDED(query_api_impl(&pkg_first, &pkg_second, &pkg_api)) && pkg_api) {
             x_package::x_package_enumerate_packages_v8_hook.create(get_vt_function(pkg_api, 39), x_package::x_package_enumerate_packages_v8_stub);
+            x_package::x_package_mount_hook.create(get_vt_function(pkg_api, 36), x_package::x_package_mount_stub);
             x_package::x_package_mount_with_ui_async_hook.create(get_vt_function(pkg_api, 37), x_package::x_package_mount_with_ui_async_stub);
             x_package::x_package_mount_with_ui_result_hook.create(get_vt_function(pkg_api, 38), x_package::x_package_mount_with_ui_result_stub);
             x_package::x_package_get_mount_path_size_hook.create(get_vt_function(pkg_api, 24), x_package::x_package_get_mount_path_size_stub);

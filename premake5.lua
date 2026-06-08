@@ -368,7 +368,6 @@ workspace "ZeroProxy"
 
 		pchheader "common.hpp"
 		pchsource "src/%{prj.name}/common.cpp"
-
 		files {
 			"./src/%{prj.name}/**.rc",
 			"./src/%{prj.name}/**.hpp",
@@ -393,6 +392,46 @@ workspace "ZeroProxy"
 		if _OPTIONS["iw4-store-copy-to"] then
 			postbuildcommands {
 				"copy /y \"$(TargetPath)\" \"" .. _OPTIONS["iw4-store-copy-to"] .. "\""
+			}
+		end
+
+		dependencies.imports()
+
+	project "client-iw5-store"
+		location "%{wks.location}/src/%{prj.name}"
+		objdir "%{wks.location}/build/obj/iw5-store"
+		targetdir "%{wks.location}/build/%{cfg.platform}/%{cfg.buildcfg}/iw5-store"
+		kind "SharedLib"
+		language "C++"
+
+		targetname "d3d9"
+
+		pchheader "common.hpp"
+		pchsource "src/%{prj.name}/common.cpp"
+		files {
+			"./src/%{prj.name}/**.rc",
+			"./src/%{prj.name}/**.hpp",
+			"./src/%{prj.name}/**.cpp",
+			"./src/%{prj.name}/resources/**.*"
+		}
+
+		includedirs {
+			"./src/%{prj.name}",
+			"./src/common",
+			"./src/generated"
+		}
+
+		resincludedirs {
+			"./src/generated"
+		}
+
+		links {
+			"common"
+		}
+
+		if _OPTIONS["iw5-store-copy-to"] then
+			postbuildcommands {
+				"copy /y \"$(TargetPath)\" \"" .. _OPTIONS["iw5-store-copy-to"] .. "\""
 			}
 		end
 
@@ -563,7 +602,32 @@ workspace "ZeroProxy"
 
 		dependencies.imports()
 
-	project "client-s2-store"
+	project "client-s1-store"
+	location "%{wks.location}/src/client-s1-store"
+	kind "SharedLib"
+	language "C++"
+	targetname "d3d11"
+
+	files {
+		"src/client-s1-store/**.cpp",
+		"src/client-s1-store/**.hpp",
+		"src/client-s1-store/**.c",
+		"src/client-s1-store/**.h",
+	}
+
+	includedirs {
+		"./src/%{prj.name}",
+		"./src/common",
+		"./src/generated"
+	}
+	
+	links {
+		"common",
+	}
+
+	targetdir "%{wks.location}/build/%{cfg.platform}/%{cfg.buildcfg}/s1-store"
+	dependencies.imports()
+project "client-s2-store"
 		location "%{wks.location}/src/%{prj.name}"
 		objdir "%{wks.location}/build/obj/s2-store"
 		targetdir "%{wks.location}/build/%{cfg.platform}/%{cfg.buildcfg}/s2-store"
@@ -743,4 +807,9 @@ workspace "ZeroProxy"
 
 	group "Dependencies"
 		dependencies.projects()
+
+
+
+
+
 
