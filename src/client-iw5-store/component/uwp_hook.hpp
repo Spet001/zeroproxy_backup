@@ -36,6 +36,207 @@ namespace uwp {
     };
     static_assert(sizeof(XPackageDetails) == 80, "XPackageDetails size mismatch");
 
+    inline HRESULT __stdcall scanner_stub_0(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 0 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_1(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 1 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_2(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 2 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_3(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 3 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_4(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 4 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_5(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 5 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_6(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 6 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_7(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 7 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_8(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 8 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_9(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 9 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_10(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 10 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_11(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 11 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_12(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 12 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_13(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 13 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_14(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 14 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_15(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 15 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_16(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 16 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_17(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 17 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_18(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 18 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_19(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 19 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_20(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 20 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_21(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 21 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_22(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 22 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_23(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 23 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_24(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 24 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_25(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 25 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_26(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 26 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_27(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 27 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_28(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 28 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_29(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 29 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_30(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 30 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_31(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 31 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_32(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 32 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_33(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 33 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_34(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 34 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_35(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 35 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_36(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 36 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_37(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 37 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_38(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 38 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_39(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 39 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_40(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 40 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_41(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 41 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_42(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 42 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_43(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 43 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_44(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 44 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_45(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 45 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_46(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 46 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_47(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 47 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_48(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 48 called!");
+        return 0;
+    }
+    inline HRESULT __stdcall scanner_stub_49(void* a, void* b, void* c, void* d, void* e, void* f) {
+        LOG("UWP", INFO, "XPackage VTable Method 49 called!");
+        return 0;
+    }
+
     inline void* get_vt_function(void* class_ptr, std::size_t index) {
         struct vt_cls { void** vftable_; };
         return PTR_AS(vt_cls*, class_ptr)->vftable_[index];
@@ -88,21 +289,34 @@ namespace uwp {
             typedef bool(__stdcall* PkgEnumCb_t)(void*, const XPackageDetails*);
             PkgEnumCb_t orig = reinterpret_cast<PkgEnumCb_t>(c->orig_cb);
             
-            if (details && details->storeId && details->packageIdentifier) {
-                LOG("UWP", INFO, "Intercepted real package enum! ID: {}, StoreID: {}, Kind: {}", details->packageIdentifier, details->storeId, details->kind);
+            if (details) {
+                LOG("UWP", INFO, "Intercepted OS package! ID: {}, StoreID: {}",
+                    details->packageIdentifier ? details->packageIdentifier : "null",
+                    details->storeId ? details->storeId : "null");
                 
-                // Pass the real package as Content (1)
-                XPackageDetails fake_details = *details;
-                fake_details.kind = 1;
-                orig(c->orig_ctx, &fake_details);
+                // Spoof 4 DLCs
+                const char* store_ids[4] = {
+                    "9PM614FZFSP1", // DLC 1
+                    "9N72J00W12MB", // DLC 2
+                    "9N14W63P3SV2", // DLC 3
+                    "9N0G8H9M1C1C"  // DLC 4
+                };
                 
-                // Pass the real package as Durable (2)
-                fake_details.kind = 2;
-                orig(c->orig_ctx, &fake_details);
-
-                // Pass the real package as Game (3)
-                fake_details.kind = 3;
-                return orig(c->orig_ctx, &fake_details);
+                for (int i = 0; i < 4; ++i) {
+                    XPackageDetails fake_details = *details;
+                    fake_details.count = 4;
+                    fake_details.index = i;
+                    fake_details.storeId = store_ids[i];
+                    // Keep original packageIdentifier so WinRT validations don't fail!
+                    // displayName can be fake or original
+                    
+                    if (!orig(c->orig_ctx, &fake_details)) {
+                        break;
+                    }
+                }
+                
+                // Stop OS enumeration since we already gave the game what it wants
+                return false;
             }
             return orig(c->orig_ctx, details);
         }
@@ -116,27 +330,6 @@ namespace uwp {
             custom_ctx.orig_cb = cb;
 
             HRESULT res = func(_this, kind, scope, &custom_ctx, hook_pkg_enum_callback);
-
-            if (cb) {
-                typedef bool(__stdcall* PkgEnumCb_t)(void*, const XPackageDetails*);
-                PkgEnumCb_t orig_cb = reinterpret_cast<PkgEnumCb_t>(cb);
-                
-                XPackageDetails fake_details = {};
-                fake_details.packageIdentifier = "ModernWarfare3.DLC.Mock";
-                fake_details.storeId = "9PM614FZFSP1"; // Use the real MW3 DLC StoreID!
-                fake_details.displayName = "Modern Warfare 3 DLC";
-
-                // Inject as Content
-                fake_details.kind = 1;
-                orig_cb(ctx, &fake_details);
-
-                // Inject as Durable
-                fake_details.kind = 2;
-                orig_cb(ctx, &fake_details);
-
-                LOG("UWP", INFO, "Injected fake DLC package with StoreID 9PM614FZFSP1 into XPackageEnumeratePackages!");
-            }
-
             return res;
         }
 
@@ -443,7 +636,7 @@ namespace uwp {
         inline HRESULT x_store_query_add_on_licenses_result_count_stub(uwp::IStoreImpl1* _this, uwp::XAsyncBlock* async, std::uint32_t* count) {
             LOG("UWP", INFO, "XStoreQueryAddOnLicensesResultCount called!");
             if (fake_async_blocks.contains(async)) {
-                if (count) *count = 1; // Fake 1 add-on
+                if (count) *count = 4; // Fake 4 add-ons
                 LOG("UWP", INFO, "XStoreQueryAddOnLicensesResultCount faked! Returning count: {}", *count);
                 return S_OK;
             }
@@ -457,11 +650,20 @@ namespace uwp {
                 fake_async_blocks.erase(async);
                 if (addon_licenses && count > 0) {
                     memset(addon_licenses, 0, sizeof(uwp::XStoreAddonLicense) * count);
-                    // Fake the MW3 DLC Add-On License
-                    strncpy_s(addon_licenses[0].sku_store_id_, "9PM614FZFSP1", _TRUNCATE);
-                    addon_licenses[0].is_active_ = true;
-                    addon_licenses[0].expiration_date_ = 0x7FFFFFFFFFFFFFFF; // Never expires
-                    LOG("UWP", INFO, "Faked XStoreAddonLicense with StoreID 9PM614FZFSP1!");
+                    
+                    const char* store_ids[4] = {
+                        "9PM614FZFSP1", // DLC 1
+                        "9N72J00W12MB", // DLC 2
+                        "9N14W63P3SV2", // DLC 3
+                        "9N0G8H9M1C1C"  // DLC 4
+                    };
+                    
+                    for (std::uint32_t i = 0; i < count && i < 4; ++i) {
+                        strncpy_s(addon_licenses[i].sku_store_id_, store_ids[i], _TRUNCATE);
+                        addon_licenses[i].is_active_ = true;
+                        addon_licenses[i].expiration_date_ = 0x7FFFFFFFFFFFFFFF; // Never expires
+                    }
+                    LOG("UWP", INFO, "Faked {} XStoreAddonLicenses!", count);
                 }
                 return S_OK;
             }
@@ -533,6 +735,48 @@ namespace uwp {
                 x_package::x_package_get_mount_path_size_hook.create(get_vt_function(*api_out, 24), x_package::x_package_get_mount_path_size_stub);
                 x_package::x_package_get_mount_path_hook.create(get_vt_function(*api_out, 25), x_package::x_package_get_mount_path_stub);
                 x_package::x_package_close_mount_handle_hook.create(get_vt_function(*api_out, 26), x_package::x_package_close_mount_handle_stub);
+                // Hook flat XPackage APIs
+                const char* package_dlls[] = {
+                    "xgameruntime.dll",
+                    "api-ms-win-gaming-xpackage-l1-1-0.dll",
+                    "api-ms-win-gaming-xpackage-l1-1-1.dll",
+                    "api-ms-win-gaming-xpackage-l1-1-2.dll"
+                };
+                
+                void* flat_mount = nullptr;
+                void* flat_mount_ui = nullptr;
+                for (const char* dll : package_dlls) {
+                    HMODULE mod = GetModuleHandleA(dll);
+                    if (mod) {
+                        if (!flat_mount) flat_mount = GetProcAddress(mod, "XPackageMount");
+                        if (!flat_mount_ui) flat_mount_ui = GetProcAddress(mod, "XPackageMountWithUIAsync");
+                    }
+                }
+                
+                if (flat_mount) {
+                    static utils::hook::detour x_package_mount_flat_hook;
+                    static auto x_package_mount_flat_stub = [](const char* identifier, void** mount) -> HRESULT __stdcall {
+                        LOG("UWP", INFO, "FLAT XPackageMount called for identifier: {}", identifier ? identifier : "null");
+                        auto func = reinterpret_cast<HRESULT(__stdcall*)(const char*, void**)>(x_package_mount_flat_hook.get_original());
+                        return func(identifier, mount);
+                    };
+                    x_package_mount_flat_hook.create(flat_mount, x_package_mount_flat_stub);
+                    LOG("UWP", INFO, "Hooked flat XPackageMount!");
+                } else {
+                    LOG("UWP", INFO, "XPackageMount export NOT FOUND in any loaded DLL!");
+                }
+                
+                if (flat_mount_ui) {
+                    static utils::hook::detour x_package_mount_ui_flat_hook;
+                    static auto x_package_mount_ui_flat_stub = [](const char* identifier, void* async) -> HRESULT __stdcall {
+                        LOG("UWP", INFO, "FLAT XPackageMountWithUIAsync called for identifier: {}", identifier ? identifier : "null");
+                        auto func = reinterpret_cast<HRESULT(__stdcall*)(const char*, void*)>(x_package_mount_ui_flat_hook.get_original());
+                        return func(identifier, async);
+                    };
+                    x_package_mount_ui_flat_hook.create(flat_mount_ui, x_package_mount_ui_flat_stub);
+                    LOG("UWP", INFO, "Hooked flat XPackageMountWithUIAsync!");
+                }
+                
                 hooked_pkg_vt = true;
             }
 

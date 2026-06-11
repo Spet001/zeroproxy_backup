@@ -34,6 +34,16 @@ namespace logger {
                     std::string plain_msg = std::format("{} [{}] ({}) {}\n", file_timestamp, level.get_label(), log_name, message);
                     fputs(plain_msg.c_str(), log_file);
                     fclose(log_file);
+                } else {
+                    char temp_path[MAX_PATH];
+                    if (GetTempPathA(MAX_PATH, temp_path)) {
+                        std::string fallback_path = std::string(temp_path) + "ZeroProxy.log";
+                        if (fopen_s(&log_file, fallback_path.c_str(), "a") == 0 && log_file) {
+                            std::string plain_msg = std::format("{} [{}] ({}) {}\n", file_timestamp, level.get_label(), log_name, message);
+                            fputs(plain_msg.c_str(), log_file);
+                            fclose(log_file);
+                        }
+                    }
                 }
             }
         }
